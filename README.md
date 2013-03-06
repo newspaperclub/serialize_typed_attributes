@@ -19,9 +19,9 @@ everything is cast to a string when the hash is persisted.
 
     car = Car.new
     car.properties = { "colour" : "red", "wheels": 4, "engine_cc": 1.8 }
-    car.colour
+    car.properties["colour"]
     # "red"
-    car.wheels
+    car.properties["wheels"]
     # "4"
 
 With this gem, you can add the following to your class description:
@@ -36,7 +36,15 @@ With this gem, you can add the following to your class description:
       serialize_typed_attribute :properties, :ownership_history, :json
     end
 
-And now you can access the hstore values as the type specified.
+And now you can access the properties of the hash directly as attributed
+accessors, cast to the field specified.
+
+    car = Car.new
+    car.properties = { "colour" : "red", "wheels": 4, "engine_cc": 1.8 }
+    car.colour
+    # "red"
+    car.wheels
+    # 4
 
 Importantly, for us anyway, it provides rudimentary dirty tracking, so you can
 check `car.colour_changed?` after setting it.
