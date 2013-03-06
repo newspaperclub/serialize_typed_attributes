@@ -171,5 +171,25 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     model.json_field = { "foo" => "bar" }
     assert model.save
   end
+
+  # Retreiving stored attributes
+  
+  test "retrieving a string" do
+    model = TestModel.new(properties: { string_field: "testing" })
+    model.save!
+    model.reload
+
+    assert_equal "testing", model.string_field
+  end
+
+  test "setting an attribute as a string and symbol" do
+    model = TestModel.new
+
+    model.attributes = { "properties" => { "string_field" => "1" } }
+    model.attributes = { :properties => { :string_field => "2" } }
+
+    assert_equal "2", model.string_field
+    assert_equal ["properties"], model.changed
+  end
   
 end

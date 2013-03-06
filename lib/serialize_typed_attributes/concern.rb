@@ -3,54 +3,61 @@ require 'active_support/concern'
 module SerializeTypedAttributes::Concern
   extend ActiveSupport::Concern
 
-  def write_serialized_typed_attribute(store_column, key, type, value=nil)
+  def write_serialized_typed_attribute(serialized_column, key, type, value=nil)
     key = key.to_s
+    serialized_column = serialized_column.to_s
 
-    store = send(store_column) || {}
-    old_value = store[key].try(:dup)
+    serialized = send(serialized_column) || {}
+    serialized.stringify_keys!
+
+    old_value = serialized[key].try(:dup)
 
     if value != old_value
-      attribute_will_change!(key.to_sym)
-      attribute_will_change!(store_column.to_sym)
+      attribute_will_change!(key)
+      attribute_will_change!(serialized_column)
     end
 
     if !value.nil?
-      cast_value = self.class.cast_attribute_to_store(value, type)
-      store[key] = cast_value
+      cast_value = self.class.cast_attribute_to_serialized(value, type)
+      serialized[key] = cast_value
     else
-      store.delete(key)
+      serialized.delete(key)
     end
 
-    send("#{store_column}=", store)
+    send("#{serialized_column}=", serialized)
   end
 
-  def read_serialized_typed_attribute(store_column, key, type)
+  def read_serialized_typed_attribute(serialized_column, key, type)
     key = key.to_s
-    store = send(store_column) || {}
-    value = store[key]
-    self.class.cast_attribute_from_store(value, type)
+    serialized_column = serialized_column.to_s
+
+    serialized = send(serialized_column) || {}
+    serialized.stringify_keys!
+
+    value = serialized[key]
+    self.class.cast_attribute_from_serialized(value, type)
   end
 
   module ClassMethods
 
-    def serialize_typed_attribute(store_column, key, type)
+    def serialize_typed_attribute(serialized_column, key, type)
 
-      define_method("#{key}=") do |value|
-        write_serialized_typed_attribute(store_column, key, type, value)
+      define_method("#{key.to_s}=") do |value|
+        write_serialized_typed_attribute(serialized_column, key, type, value)
       end
 
-      define_method(key) do
-        read_serialized_typed_attribute(store_column, key, type)
+      define_method(key.to_s) do
+        read_serialized_typed_attribute(serialized_column, key, type)
       end
 
-      define_method("#{key}_changed?") do
-        changed.include?(key)
+      define_method("#{key.to_s}_changed?") do
+        changed.include?(key.to_s)
       end
 
     end
 
-    def cast_attribute_from_store(value, type)
-      case type
+    def cast_attribute_from_serialized(value, type)
+      case type.to_sym
       when :string
         value.to_s if value
       when :integer
@@ -66,10 +73,12 @@ module SerializeTypedAttributes::Concern
       end
     end
 
-    def cast_attribute_to_store(value, type)
-      case type
-      when :string, :integer, :float, :decimal
+    def cast_attribute_to_serialized(value, type)
+      case type.to_sym
+      when :string, :integer, :float
         value.to_s
+      when :decimal
+        value.to_s('F') # persist BigDecimal using floating point notation
       when :json
         JSON.dump(value)
       else
