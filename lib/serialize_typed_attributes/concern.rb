@@ -4,12 +4,14 @@ module SerializeTypedAttributes::Concern
   extend ActiveSupport::Concern
 
   def write_serialized_typed_attribute(store_column, key, type, value=nil)
+    key = key.to_s
+
     store = send(store_column) || {}
     old_value = store[key].try(:dup)
 
     if value != old_value
-      attribute_will_change!(key)
-      attribute_will_change!(store_column)
+      attribute_will_change!(key.to_sym)
+      attribute_will_change!(store_column.to_sym)
     end
 
     if !value.nil?
@@ -23,6 +25,7 @@ module SerializeTypedAttributes::Concern
   end
 
   def read_serialized_typed_attribute(store_column, key, type)
+    key = key.to_s
     store = send(store_column) || {}
     value = store[key]
     self.class.cast_attribute_from_store(value, type)
