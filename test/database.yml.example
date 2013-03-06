@@ -1,0 +1,5 @@
+adapter: postgresql
+database: hstore_test
+username: tom
+password:
+host: 127.0.0.1
