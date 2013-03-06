@@ -3,33 +3,29 @@ require 'active_support/concern'
 module SerializeTypedAttributes::Concern
   extend ActiveSupport::Concern
 
-  module InstanceMethods
+  def write_serialized_typed_attribute(store_column, key, type, value=nil)
+    store = send(store_column) || {}
+    old_value = store[key].try(:dup)
 
-    def write_serialized_typed_attribute(store_column, key, type, value=nil)
-      store = send(store_column) || {}
-      old_value = store[key].try(:dup)
-
-      if value != old_value
-        attribute_will_change!(key)
-        attribute_will_change!(store_column)
-      end
-
-      if !value.nil?
-        cast_value = self.class.cast_attribute_to_store(value, type)
-        store[key] = cast_value
-      else
-        store.delete(key)
-      end
-
-      send("#{store_column}=", store)
+    if value != old_value
+      attribute_will_change!(key)
+      attribute_will_change!(store_column)
     end
 
-    def read_serialized_typed_attribute(store_column, key, type)
-      store = send(store_column) || {}
-      value = store[key]
-      self.class.cast_attribute_from_store(value, type)
+    if !value.nil?
+      cast_value = self.class.cast_attribute_to_store(value, type)
+      store[key] = cast_value
+    else
+      store.delete(key)
     end
 
+    send("#{store_column}=", store)
+  end
+
+  def read_serialized_typed_attribute(store_column, key, type)
+    store = send(store_column) || {}
+    value = store[key]
+    self.class.cast_attribute_from_store(value, type)
   end
 
   module ClassMethods
