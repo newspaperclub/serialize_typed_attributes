@@ -139,5 +139,37 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     assert_equal object, model.json_field
     assert model.json_field_changed?
   end
+
+  # Persistance
+
+  test "persisting string field" do
+    model = TestModel.new
+    model.string_field = "String"
+    assert model.save
+  end
+
+  test "persisting integer field" do
+    model = TestModel.new
+    model.integer_field = 10
+    assert model.save
+  end
+
+  test "persisting decimal field" do
+    model = TestModel.new
+    model.decimal_field = BigDecimal.new("1.5")
+    assert model.save
+  end
+
+  test "persisting float field" do
+    model = TestModel.new
+    model.float_field = 1.5
+    assert model.save
+  end
+
+  test "persisting JSON field" do
+    model = TestModel.new
+    model.json_field = { "foo" => "bar" }
+    assert model.save
+  end
   
 end
