@@ -159,10 +159,17 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     assert !model.boolean_field_changed?
   end
 
-  test "setting a boolean attribute" do
+  test "setting a boolean attribute true" do
     model = TestModel.new
     model.boolean_field = true
     assert_equal true, model.boolean_field
+    assert model.boolean_field_changed?
+  end
+
+  test "setting a boolean attribute false" do
+    model = TestModel.new
+    model.boolean_field = false
+    assert_equal false, model.boolean_field
     assert model.boolean_field_changed?
   end
 
