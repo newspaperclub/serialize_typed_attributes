@@ -68,6 +68,8 @@ module SerializeTypedAttributes::Concern
         BigDecimal.new(value) if value.present?
       when :json
         JSON.parse(value) if value.present?
+      when :boolean
+        value.to_s == "true" ? true : value.to_s == "false" ? false : nil
       else
         value
       end
@@ -75,7 +77,7 @@ module SerializeTypedAttributes::Concern
 
     def cast_attribute_to_serialized(value, type)
       case type.to_sym
-      when :string, :integer, :float
+      when :string, :integer, :float, :boolean
         value.to_s
       when :decimal
         value.to_s('F') # persist BigDecimal using floating point notation

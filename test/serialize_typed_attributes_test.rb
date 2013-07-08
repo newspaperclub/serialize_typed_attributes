@@ -140,6 +140,32 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     assert model.json_field_changed?
   end
 
+  # Boolean tests
+
+  test "getting a nil boolean attribute" do
+    model = TestModel.new
+    assert_nil model.boolean_field
+  end
+
+  test "getting a boolean attribute" do
+    model = TestModel.new(properties: { boolean_field: "false" })
+    assert_equal false, model.boolean_field
+  end
+
+  test "setting a nil boolean attribute" do
+    model = TestModel.new
+    model.boolean_field = nil
+    assert_nil model.boolean_field
+    assert !model.boolean_field_changed?
+  end
+
+  test "setting a boolean attribute" do
+    model = TestModel.new
+    model.boolean_field = true
+    assert_equal true, model.boolean_field
+    assert model.boolean_field_changed?
+  end
+
   # Persistance
 
   test "persisting string field" do
@@ -169,6 +195,12 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
   test "persisting JSON field" do
     model = TestModel.new
     model.json_field = { "foo" => "bar" }
+    assert model.save
+  end
+
+  test "persisting boolean field" do
+    model = TestModel.new
+    model.boolean_field = false
     assert model.save
   end
 
