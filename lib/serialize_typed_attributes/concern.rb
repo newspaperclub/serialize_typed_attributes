@@ -54,6 +54,12 @@ module SerializeTypedAttributes::Concern
         changed.include?(key.to_s)
       end
 
+      if type == :boolean
+        define_method("#{key.to_s}?") do
+          !!read_serialized_typed_attribute(serialized_column, key, type)
+        end
+      end
+
     end
 
     def cast_attribute_from_serialized(value, type)

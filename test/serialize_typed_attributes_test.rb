@@ -145,11 +145,15 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
   test "getting a nil boolean attribute" do
     model = TestModel.new
     assert_nil model.boolean_field
+    assert model.respond_to?(:boolean_field?)
+    assert !model.boolean_field?
   end
 
   test "getting a boolean attribute" do
     model = TestModel.new(properties: { boolean_field: "false" })
     assert_equal false, model.boolean_field
+    assert model.respond_to?(:boolean_field?)
+    assert !model.boolean_field?
   end
 
   test "setting a nil boolean attribute" do
@@ -157,6 +161,7 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     model.boolean_field = nil
     assert_nil model.boolean_field
     assert !model.boolean_field_changed?
+    assert !model.boolean_field?
   end
 
   test "setting a boolean attribute true" do
@@ -164,6 +169,7 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     model.boolean_field = true
     assert_equal true, model.boolean_field
     assert model.boolean_field_changed?
+    assert model.boolean_field?
   end
 
   test "setting a boolean attribute false" do
@@ -171,6 +177,7 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     model.boolean_field = false
     assert_equal false, model.boolean_field
     assert model.boolean_field_changed?
+    assert !model.boolean_field?
   end
 
   # Persistance
