@@ -180,6 +180,26 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
     assert !model.boolean_field?
   end
 
+  # Time tests
+
+  test "getting a nil time attribute" do
+    model = TestModel.new
+    assert_nil model.time_field
+  end
+
+  test "getting a time attribute" do
+    model = TestModel.new(properties: { time_field: "2015-01-01T00:00:00+00:00"})
+    assert_equal Time.utc(2015, 1, 1, 0, 0, 0), model.time_field
+  end
+
+  test "setting a time field" do
+    model = TestModel.new
+    time = Time.utc(2015, 1, 1, 0, 0, 0)
+    model.time_field = time
+    assert_equal time, model.time_field
+    assert model.time_field_changed?
+  end
+
   # Persistance
 
   test "persisting string field" do
@@ -215,6 +235,12 @@ class StoreTypedAttributesTest < Test::Unit::TestCase
   test "persisting boolean field" do
     model = TestModel.new
     model.boolean_field = false
+    assert model.save
+  end
+
+  test "persisting a time field" do
+    model = TestModel.new
+    model.time_field = Time.utc(2015, 1, 1, 0, 0, 0)
     assert model.save
   end
 

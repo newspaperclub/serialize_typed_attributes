@@ -76,6 +76,12 @@ module SerializeTypedAttributes::Concern
         JSON.parse(value) if value.present?
       when :boolean
         value.to_s == "true" ? true : value.to_s == "false" ? false : nil
+      when :time
+        begin
+          Time.iso8601(value) if value
+        rescue ArgumentError
+          nil
+        end
       else
         value
       end
@@ -89,6 +95,8 @@ module SerializeTypedAttributes::Concern
         value.to_s('F') # persist BigDecimal using floating point notation
       when :json
         JSON.dump(value)
+      when :time
+        value.iso8601
       else
         value.to_s
       end

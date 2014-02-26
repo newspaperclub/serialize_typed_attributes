@@ -11,4 +11,5 @@ class TestModel < ActiveRecord::Base
   serialize_typed_attribute :properties, :decimal_field, :decimal
   serialize_typed_attribute :properties, :json_field, :json
   serialize_typed_attribute :properties, :boolean_field, :boolean
+  serialize_typed_attribute :properties, :time_field, :time
 end
