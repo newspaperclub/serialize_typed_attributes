@@ -11,10 +11,13 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*"] + ["Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "activesupport", "~> 3.0"
-  s.add_dependency "activerecord", "~> 3.0"
+  s.add_dependency 'activerecord', ENV.fetch('RAILS_VERSION', ['>= 3.2', '< 3.99'])
+  s.add_dependency 'activesupport', ENV.fetch('RAILS_VERSION', ['>= 3.2', '< 3.99'])
 
-  s.add_development_dependency "test-unit"
-  s.add_development_dependency "pg"
-  s.add_development_dependency "activerecord-postgres-hstore", ">= 0.7.6"
+  s.add_development_dependency 'test-unit'
+  if RUBY_PLATFORM == 'java'
+    s.add_development_dependency 'activerecord-jdbcpostgresql-adapter'
+  else
+    s.add_development_dependency 'pg'
+  end
 end
