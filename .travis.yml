@@ -1,0 +1,15 @@
+addons:
+  postgresql: "9.3"
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - psql -c 'CREATE EXTENSION IF NOT EXISTS hstore;' -d travis_ci_test -U postgres
+  - cp test/database.yml.travis test/database.yml
+language: ruby
+env:
+  matrix:
+    - RAILS_VERSION="~> 3.2.19" JRUBY_OPTS="$JRUBY_OPTS --debug"
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1.0
+  - jruby-19mode
