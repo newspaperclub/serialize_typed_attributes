@@ -1,5 +1,6 @@
 serialize_typed_attributes
 ==
+[![Build Status](https://travis-ci.org/salsify/serialize_typed_attributes.svg)](https://travis-ci.org/salsify/serialize_typed_attributes)
 
 This is a Ruby gem for Rails, to add typed getter and setter fields for the keys in
 an ActiveRecord object's serialized Hash.
