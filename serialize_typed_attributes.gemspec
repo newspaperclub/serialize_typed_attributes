@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*"] + ["Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "activesupport", "~> 3.0"
-  s.add_dependency "activerecord", "~> 3.0"
+  s.add_dependency "activesupport", "~> 4.1"
+  s.add_dependency "activerecord", "~> 4.1"
 
   s.add_development_dependency "test-unit"
   s.add_development_dependency "pg"
